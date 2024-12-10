@@ -19,7 +19,7 @@ func ListEnvGroups(ctx context.Context, handler *RenderAPIHandler, stream *model
 	go func() {
 		defer close(renderChan)
 		defer close(errorChan)
-		if err := processServices(ctx, handler, renderChan, &wg); err != nil {
+		if err := processEnvGroups(ctx, handler, renderChan, &wg); err != nil {
 			errorChan <- err // Send error to the error channel
 		}
 		wg.Wait()
@@ -46,15 +46,15 @@ func ListEnvGroups(ctx context.Context, handler *RenderAPIHandler, stream *model
 }
 
 func GetEnvGroup(ctx context.Context, handler *RenderAPIHandler, resourceID string) (*models.Resource, error) {
-	service, err := processService(ctx, handler, resourceID)
+	envGroup, err := processEnvGroup(ctx, handler, resourceID)
 	if err != nil {
 		return nil, err
 	}
 	value := models.Resource{
-		ID:   service.ID,
-		Name: service.Name,
+		ID:   envGroup.ID,
+		Name: envGroup.Name,
 		Description: JSONAllFieldsMarshaller{
-			Value: service,
+			Value: envGroup,
 		},
 	}
 	return &value, nil
@@ -107,8 +107,8 @@ func processEnvGroups(ctx context.Context, handler *RenderAPIHandler, renderChan
 	return nil
 }
 
-func processEnvGroup(ctx context.Context, handler *RenderAPIHandler, resourceID string) (*model.ServiceDescription, error) {
-	var service model.ServiceDescription
+func processEnvGroup(ctx context.Context, handler *RenderAPIHandler, resourceID string) (*model.EnvGroupDescription, error) {
+	var envGroup model.EnvGroupDescription
 	var resp *http.Response
 	baseURL := "https://api.render.com/v1/services/"
 
@@ -126,7 +126,7 @@ func processEnvGroup(ctx context.Context, handler *RenderAPIHandler, resourceID 
 		}
 		defer resp.Body.Close()
 
-		if e = json.NewDecoder(resp.Body).Decode(&service); e != nil {
+		if e = json.NewDecoder(resp.Body).Decode(&envGroup); e != nil {
 			return nil, fmt.Errorf("failed to decode response: %w", e)
 		}
 		return resp, e
@@ -136,5 +136,5 @@ func processEnvGroup(ctx context.Context, handler *RenderAPIHandler, resourceID 
 	if err != nil {
 		return nil, fmt.Errorf("error during request handling: %w", err)
 	}
-	return &service, nil
+	return &envGroup, nil
 }

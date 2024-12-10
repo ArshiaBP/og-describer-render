@@ -158,6 +158,64 @@ type JobDescription struct {
 	FinishedAt   time.Time `json:"finishedAt"`
 }
 
+type DiskResponse struct {
+	Disk   DiskDescription `json:"disk"`
+	Cursor string          `json:"cursor"`
+}
+
+type DiskDescription struct {
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	SizeGB    int       `json:"sizeGB"`
+	MountPath string    `json:"mountPath"`
+	ServiceID string    `json:"serviceId"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type Commit struct {
+	ID        string    `json:"id"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type Image struct {
+	Ref                string `json:"ref"`
+	SHA                string `json:"sha"`
+	RegistryCredential string `json:"registryCredential"`
+}
+
+type DeployResponse struct {
+	Deploy DeployDescription `json:"deploy"`
+	Cursor string            `json:"cursor"`
+}
+
+type DeployDescription struct {
+	ID         string    `json:"id"`
+	Commit     Commit    `json:"commit"`
+	Image      Image     `json:"image"`
+	Status     string    `json:"status"`
+	Trigger    string    `json:"trigger"`
+	FinishedAt time.Time `json:"finishedAt"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+type BlueprintResponse struct {
+	BluePrint BlueprintDescription `json:"blueprint"`
+	Cursor    string               `json:"cursor"`
+}
+
+type BlueprintDescription struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Status   string    `json:"status"`
+	AutoSync bool      `json:"autoSync"`
+	Repo     string    `json:"repo"`
+	Branch   string    `json:"branch"`
+	LastSync time.Time `json:"lastSync"`
+}
+
 type ServiceLink struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -172,4 +230,29 @@ type EnvGroupDescription []struct {
 	UpdatedAt     time.Time     `json:"updatedAt"`
 	ServiceLinks  []ServiceLink `json:"serviceLinks"`
 	EnvironmentID string        `json:"environmentId"`
+}
+
+type HeaderResponse struct {
+	Header HeaderDescription `json:"header"`
+	Cursor string            `json:"cursor"`
+}
+
+type HeaderDescription struct {
+	ID    string `json:"id"`
+	Path  string `json:"path"`
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+type RouteResponse struct {
+	Route  RouteDescription `json:"route"`
+	Cursor string           `json:"cursor"`
+}
+
+type RouteDescription struct {
+	ID          string `json:"id"`
+	Type        string `json:"type"`
+	Source      string `json:"source"`
+	Destination string `json:"destination"`
+	Priority    int    `json:"priority"`
 }
